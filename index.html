@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Your data</title>
+		<link type="text/css" rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="js/script.js"></script>
+	</head>
+	<body>
+		<div id=container>
+			<form action="./js/addDB.php" method="POST" accept-charset="utf-8" class="form">
+				<fieldset>
+					<legend>Add data</legend>
+					Please enter a name: <input type="text" name="name" value="" placeholder=""><br>
+					Please enter an email: <input type="text" name="email" value="" placeholder=""><br>
+					<input type="submit" id="add" name="submit" value="Add">
+				</fieldset>
+			</form>
+			
+			<form action="./js/updateDB.php" method="POST" accept-charset="utf-8" class="form">
+				<fieldset>
+					<legend>Update email</legend>
+					Please enter a name: <input type="text" name="name" value="" placeholder=""><br>
+					Please enter a new email: <input type="text" name="email" value="" placeholder=""><br>
+					<input type="submit" id="update" name="submit" value="Update">
+				</fieldset>
+			</form>
+			
+			<form action="./js/deleteDB.php" method="POST" accept-charset="utf-8" class="form">
+				<fieldset>
+					<legend>Delete data</legend>
+					Please enter a name you want to delete: <input type="text" name="name" value="" placeholder=""><br>
+					<input type="submit" id="delete" name="submit" value="Delete">
+					
+				</fieldset>
+			</form>
+			<button id="showData">Show data</button>
+			<div id="table">
+				
+			</div>
+		</div>
+	</body>
+	<script>
+		window.onload = pageLoad;
+
+		function pageLoad(){
+			document.getElementById('showData').onclick = getData;
+		}
+		function getData(){
+			var xhr = new XMLHttpRequest(); 
+			xhr.open("GET", "js/showDB.php"); 
+			xhr.onload = function() { 
+				jdata = JSON.parse(xhr.responseText)
+				showTable(jdata);
+			}; 
+			xhr.onerror = function() { alert("ERROR!"); }; 
+			xhr.send();  
+		}
+
+		function showTable(data){
+			var keys = Object.keys(data);
+			var keys2 = Object.keys(data[keys[0]]);
+			var tablearea = document.getElementById("table")
+			var table = document.createElement("table");
+			var tr = document.createElement("tr");
+			for (var i = 0; i <keys2.length; i++) {
+				var th = document.createElement("th");
+				th.innerHTML = keys2[i];
+				tr.appendChild(th);
+			}
+			table.appendChild(tr);
+			for (var i=0;i<keys.length;i++){
+				var tr = document.createElement("tr");
+				for (var j=0;j<keys2.length;j++){
+					var td = document.createElement("td");
+					var temp = data[keys[i]];
+					td.innerHTML = temp[keys2[j]];
+					tr.appendChild(td);
+				}
+				table.appendChild(tr);
+			}
+			tablearea.innerHTML = "";
+			tablearea.appendChild(table);
+		}
+	</script>
+</html>
